@@ -1,0 +1,13 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+body {
+    background: linear-gradient(to bottom, #90dffe 0%, #38a3d1 100% );
+    background-size: cover;
+    position: relative;
+    background-repeat: no-repeat;
+    overflow:hidden; 
+}
