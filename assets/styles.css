@@ -10,6 +10,8 @@ body {
     background-repeat: no-repeat;
     overflow:hidden; 
     background-attachment: fixed;
+    max-width:fit-content;
+    
 }
 h1 {
     color: grey;
@@ -19,6 +21,7 @@ h1 {
 }
 .container-fluid {
     display: flex;
+    
 }
 .weather-input {
     width: 550px;
@@ -39,9 +42,13 @@ h1 {
     margin-right: 200px;
     width:100%;
 }
-.weather-data {
+
+ .weather-data {
     width: 100%;
-}
+    justify-content: space-evenly;
+
+} 
+
 
 /* This is where the weather will be displayed */
 
@@ -51,7 +58,9 @@ h1 {
     padding: 20px 70px 20px 20px;
     background: rgb(91, 88, 88);
     display: flex;
+    position: relative;
     margin-left: 15px;
+    
 }
 .current-weather .icon img {
     max-width: 120px;
@@ -65,9 +74,28 @@ h1 {
 }
 .forcast-days {
     display: flex;
-    gap: 20px;
+    gap: 15px;
     margin-left: 25px;
+    margin-right: 10px;
+    text-align: center;
+    color: white;
+    text-shadow: black 1px 1px;
+    background: linear-gradient(to bottom,#2d91c2 0%,#1e528e 100%); )
 }
 .weather-card {
-   
+justify-content: flex-start;
+}
+
+.card{
+   background: #2d91c2;
+}
+
+
+/* Media Queries */
+@media (max-width:1050px ) {
+
+}
+
+@media (min-width: 560px) {
+    
 }
