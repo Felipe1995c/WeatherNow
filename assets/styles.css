@@ -10,7 +10,6 @@ body {
     background-repeat: no-repeat;
     overflow:hidden; 
     background-attachment: fixed;
-    max-width:fit-content;
     
 }
 h1 {
@@ -21,6 +20,7 @@ h1 {
 }
 .container-fluid {
     display: flex;
+    width: 100%;
     
 }
 .weather-input {
@@ -45,7 +45,8 @@ h1 {
 
  .weather-data {
     width: 100%;
-    justify-content: space-evenly;
+   
+ 
 
 } 
 
@@ -60,13 +61,15 @@ h1 {
     display: flex;
     position: relative;
     margin-left: 15px;
+    margin-right: 0;
+    flex-wrap: nowrap;
     
 }
 .current-weather .icon img {
     max-width: 120px;
     margin-top: -15px;
 }
-.current-weather .icon h4{
+.current-weather .icon h4 {
     margin-top: -10px;
     text-transform: capitalize;
     text-decoration: underline;
@@ -74,18 +77,22 @@ h1 {
 }
 .forcast-days {
     display: flex;
-    gap: 15px;
+    gap: 25px;
     margin-left: 25px;
     margin-right: 10px;
     text-align: center;
     color: white;
     text-shadow: black 1px 1px;
-    background: linear-gradient(to bottom,#2d91c2 0%,#1e528e 100%); )
+    background: linear-gradient(to bottom,#2d91c2 0%,#1e528e 100%); 
+    background-attachment: fixed;
+    flex-wrap: nowrap;
 }
 .weather-card {
-justify-content: flex-start;
-}
+width:200px;
+position: relative;
+right: 35px;
 
+}
 .card{
    background: #2d91c2;
 }
@@ -97,5 +104,5 @@ justify-content: flex-start;
 }
 
 @media (min-width: 560px) {
-    
+
 }
