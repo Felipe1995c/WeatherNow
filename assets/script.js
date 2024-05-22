@@ -1,7 +1,7 @@
 const cityInput = document.querySelector(".city-input");
 const searchButton = document.querySelector(".search-btn");
-const weatherCardsDiv = document.querySelector(".weather-card")
-const currentWeatherDiv = document.querySelector(".current-weather")
+const weatherCardsDiv = document.querySelector(".weather-card");
+const currentWeatherDiv = document.querySelector(".current-weather");
 
 
 // API KEY
@@ -36,7 +36,7 @@ const getWeatherDetails = (cityName, lat, lon) => {
     const WEATHER_API = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=imperial`;
 
     fetch(WEATHER_API).then(response => response.json()).then(data => {
-        //Picking the forecasts to be able to display one days forecast
+        //Picking the forecasts to be able to display one day per forecast
         const uniqueForecastDays = [];
         const fiveDaysForecast = data.list.filter(forecast => {
             const forecastDate = new Date(forecast.dt_txt).getDate();
@@ -45,15 +45,15 @@ const getWeatherDetails = (cityName, lat, lon) => {
             }
         });
         // Clearing previous weather with empty string
-        cityInput.value = " ";
-        weatherCardsDiv.innerHTML = " ";
-        currentWeatherDiv.innerHTML = " ";
+        cityInput.value = "";
+        weatherCardsDiv.innerHTML = "";
+        currentWeatherDiv.innerHTML = "";
 
         // Creating weather card and adding them to the DOM
         console.log(fiveDaysForecast);
-        fiveDaysForecast.forEach(weatherItem, index => {
+        fiveDaysForecast.forEach((weatherItem, index) => {
             if (index === 0) {
-                currentWeatherDiv.insertAdjacentHTML("beforeend", createWeatherCard(cityName, weatherItem, index))
+                currentWeatherDiv.insertAdjacentHTML("beforeend", createWeatherCard(cityName, weatherItem, index));
             } else {
                 weatherCardsDiv.insertAdjacentHTML("beforeend", createWeatherCard(cityName, weatherItem, index));
 
