@@ -44,10 +44,24 @@ const getWeatherDetails = (cityName, lat, lon) => {
             if (!uniqueForecastDays.has(forecastDate)) {
                 uniqueForecastDays.add(forecastDate);
                 fiveDaysForecast.push(forecast);
-                if (fiveDaysForecast.length === 5) break; // Stop once we have 5 unique days
+                //if (fiveDaysForecast.length === 5) break; // Stop once we have 5 unique days
             }
         }
+        localStorage.setItem('weatherData', JSON.stringify({
+            cityName,
+            weatherData:fiveDaysForecast
+        }));
 
+        displayWeatherData(cityName, fiveDaysForecast);
+
+
+        
+    }).catch(() => {
+        alert("An error occurred when fetching forecast");
+    });
+};
+
+const displayWeatherData = (cityName, fiveDaysForecast) =>{
         // Clearing previous weather with an empty string
         cityInput.value = "";
         weatherCardsDiv.innerHTML = "";
@@ -62,11 +76,7 @@ const getWeatherDetails = (cityName, lat, lon) => {
                 weatherCardsDiv.insertAdjacentHTML("beforeend", createWeatherCard(cityName, weatherItem, index));
             }
         });
-
-    }).catch(() => {
-        alert("An error occurred when fetching forecast");
-    });
-};
+    };
 
 const getCityCoordinates = () => {
     const cityName = cityInput.value.trim(); // This will get the city entered by the user and remove extra spaces with .trim()
@@ -82,7 +92,15 @@ const getCityCoordinates = () => {
     }).catch(() => {
         alert("An error occurred while fetching the coordinates");
     });
-}
+};
+
+// Load weather data from local storage on page load
+window.addEventListener('load', () => {
+    const storedWeatherData = JSON.parse(localStorage.getItem('weatherData'));
+    if (storedWeatherData) {
+        displayWeatherData(storedWeatherData.cityName, storedWeatherData.weatherData);
+    }
+});
 
 searchButton.addEventListener("click", getCityCoordinates);
 cityInput.addEventListener("keyup", e => e.key === "Enter" && getCityCoordinates());
