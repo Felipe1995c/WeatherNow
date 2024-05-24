@@ -2,6 +2,7 @@ const cityInput = document.querySelector(".city-input");
 const searchButton = document.querySelector(".search-btn");
 const weatherCardsDiv = document.querySelector(".weather-card");
 const currentWeatherDiv = document.querySelector(".current-weather");
+const recentSearchesDiv = document.querySelector(".recent-searches");
 
 // API KEY
 const API_KEY = "38fa05b5edfdffe600b9a1faf86df7a1";
@@ -53,8 +54,6 @@ const getWeatherDetails = (cityName, lat, lon) => {
         }));
 
         displayWeatherData(cityName, fiveDaysForecast);
-
-
         
     }).catch(() => {
         alert("An error occurred when fetching forecast");
@@ -93,6 +92,38 @@ const getCityCoordinates = () => {
         alert("An error occurred while fetching the coordinates");
     });
 };
+
+
+const updateRecentSearches = (cityName) => {
+    let recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+    // Add the new search if it's not already in the list
+    if (!recentSearches.includes(cityName)) {
+        recentSearches.unshift(cityName); // Add to the beginning of the list
+        if (recentSearches.length > 5) {
+            recentSearches.pop(); // Remove the oldest search if we have more than 5
+        }
+        localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+    }
+    displayRecentSearches();
+};
+const displayRecentSearches = () => {
+    recentSearchesDiv.innerHTML = ""; // Clear previous recent searches
+
+    let recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+
+    recentSearches.forEach(cityName => {
+        const searchItem = document.createElement('button');
+        searchItem.classList.add('recent-search-item');
+        searchItem.textContent = cityName;
+        searchItem.addEventListener('click', () => {
+            cityInput.value = cityName;
+            getCityCoordinates();
+        });
+        recentSearchesDiv.appendChild(searchItem);
+    });
+};
+
+
 
 // Load weather data from local storage on page load
 window.addEventListener('load', () => {
