@@ -94,34 +94,51 @@ const getCityCoordinates = () => {
 };
 
 
-const updateRecentSearches = (cityName) => {
-    let recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
-    // Add the new search if it's not already in the list
-    if (!recentSearches.includes(cityName)) {
-        recentSearches.unshift(cityName); // Add to the beginning of the list
-        if (recentSearches.length > 5) {
-            recentSearches.pop(); // Remove the oldest search if we have more than 5
+function addSearch() {
+    let savedSearch  = searchButton.value.trim();
+ 
+    if (query) {
+        let searches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+        
+        // Remove duplicates
+        searches = searches.filter(search => search !== savedSearch);
+    
+        // Add the new search to the beginning of the array
+        searches.unshift(savedSearch);
+    
+        // Keep only the latest 5 searches
+        if (searches.length > 5) {
+          searches.pop();
         }
-        localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
-    }
-    displayRecentSearches();
-};
-const displayRecentSearches = () => {
-    recentSearchesDiv.innerHTML = ""; // Clear previous recent searches
+    
+        // Save the updated searches array to local storage
+        localStorage.setItem('recentSearches', JSON.stringify(searches));
+        
+        // Clear the search input
+        searchInput.value = '';
+    
+        // Update the displayed list
+        loadRecentSearches();
+      }
+    };
 
-    let recentSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
 
-    recentSearches.forEach(cityName => {
-        const searchItem = document.createElement('button');
-        searchItem.classList.add('recent-search-item');
-        searchItem.textContent = cityName;
-        searchItem.addEventListener('click', () => {
-            cityInput.value = cityName;
-            getCityCoordinates();
-        });
-        recentSearchesDiv.appendChild(searchItem);
+function loadRecentSearches() {
+    const searchList = document.getElementById('search-list');
+    searchList.innerHTML = '';
+  
+    const searches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+  
+    searches.forEach(search => {
+      const li = document.createElement('li');
+      li.textContent = search;
+      li.className = 'search-item';
+      li.onclick = () => {
+        document.getElementById('search-input').value = search;
+      };
+      searchList.appendChild(li);
     });
-};
+  }
 
 
 
@@ -131,6 +148,10 @@ window.addEventListener('load', () => {
     if (storedWeatherData) {
         displayWeatherData(storedWeatherData.cityName, storedWeatherData.weatherData);
     }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadRecentSearches();
 });
 
 searchButton.addEventListener("click", getCityCoordinates);
