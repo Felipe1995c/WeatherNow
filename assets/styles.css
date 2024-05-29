@@ -109,5 +109,14 @@ h1 {
     color: white;
 }
 
+/* Recent searches*/
+.recent-searches {
+color: black;
+text-shadow: #1e528e 1px 1px;
+}
+
+#search-list {
+ list-style: none;
+}
 
 /* Media Queries */

@@ -95,16 +95,16 @@ const getCityCoordinates = () => {
 
 
 function addSearch() {
-    let savedSearch  = searchButton.value.trim();
- 
+    let cityInput = document.querySelector('.city-input');
+    const query = cityInput.value.trim();
     if (query) {
         let searches = JSON.parse(localStorage.getItem('recentSearches')) || [];
         
         // Remove duplicates
-        searches = searches.filter(search => search !== savedSearch);
+        searches = searches.filter(search => search !== query);
     
         // Add the new search to the beginning of the array
-        searches.unshift(savedSearch);
+        searches.unshift(query);
     
         // Keep only the latest 5 searches
         if (searches.length > 5) {
@@ -115,7 +115,7 @@ function addSearch() {
         localStorage.setItem('recentSearches', JSON.stringify(searches));
         
         // Clear the search input
-        searchInput.value = '';
+        cityInput.value = '';
     
         // Update the displayed list
         loadRecentSearches();
@@ -134,7 +134,7 @@ function loadRecentSearches() {
       li.textContent = search;
       li.className = 'search-item';
       li.onclick = () => {
-        document.getElementById('search-input').value = search;
+        document.getElementByClass('city-input').value = search;
       };
       searchList.appendChild(li);
     });
@@ -154,5 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadRecentSearches();
 });
 
-searchButton.addEventListener("click", getCityCoordinates);
+
+
+searchButton.addEventListener("click", getCityCoordinates(), addSearch());
 cityInput.addEventListener("keyup", e => e.key === "Enter" && getCityCoordinates());
