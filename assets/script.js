@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadRecentSearches();
 });
 
-
-
-searchButton.addEventListener("click", getCityCoordinates(), addSearch());
+searchButton.addEventListener("click", getCityCoordinates);
+searchButton.addEventListener("click", addSearch);
 cityInput.addEventListener("keyup", e => e.key === "Enter" && getCityCoordinates());
+cityInput.addEventListener("keyup", e => e.key === "Enter" && addSearch());
