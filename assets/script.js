@@ -11,7 +11,7 @@ const createWeatherCard = (cityName, weatherItem, index) => {
     if (index === 0) {  // HTML for current weather card
         return ` 
         <div class="details">
-            <h2> ${cityName} (${weatherItem.dt_txt.split(" ")[0]})</h2>
+            <h2> ${cityName} (Current)</h2>
             <h4>Temperature: ${weatherItem.main.temp.toFixed(0)}°F</h4>
             <h4>Wind: ${weatherItem.wind.speed.toFixed(0)}mph</h4>
             <h4>Humidity: ${weatherItem.main.humidity}%</h4>
@@ -33,49 +33,64 @@ const createWeatherCard = (cityName, weatherItem, index) => {
 }
 
 const getWeatherDetails = (cityName, lat, lon) => {
-    const WEATHER_API = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=imperial`;
+    const CURRENT_WEATHER_API = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=imperial`;
+    const FORECAST_API = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=imperial`;
 
-    fetch(WEATHER_API).then(response => response.json()).then(data => {
-        // Picking the forecasts to be able to display one day per forecast
-        const uniqueForecastDays = new Set();
-        const fiveDaysForecast = [];
+    // Fetch current weather data
+    fetch(CURRENT_WEATHER_API)
+        .then(response => response.json())
+        .then(currentData => {
+            // Fetch 5-day forecast data
+            fetch(FORECAST_API)
+                .then(response => response.json())
+                .then(forecastData => {
+                    // Picking the forecasts to be able to display one per day
+                    const uniqueForecastDays = new Set();
+                    const fiveDaysForecast = [];
 
-        for (let forecast of data.list) {
-            const forecastDate = new Date(forecast.dt_txt).getDate();
-            if (!uniqueForecastDays.has(forecastDate)) {
-                uniqueForecastDays.add(forecastDate);
-                fiveDaysForecast.push(forecast);
-                //if (fiveDaysForecast.length === 5) break; // Stop once we have 5 unique days
-            }
-        }
-        localStorage.setItem('weatherData', JSON.stringify({
-            cityName,
-            weatherData:fiveDaysForecast
-        }));
+                    for (let forecast of forecastData.list) {
+                        const forecastDate = new Date(forecast.dt_txt).getDate();
+                        if (!uniqueForecastDays.has(forecastDate)) {
+                            uniqueForecastDays.add(forecastDate);
+                            fiveDaysForecast.push(forecast);
+                            if (fiveDaysForecast.length === 5) break; // Stop once we have 5 unique days
+                        }
+                    }
 
-        displayWeatherData(cityName, fiveDaysForecast);
-        
-    }).catch(() => {
-        alert("An error occurred when fetching forecast");
-    });
+                    // Combine current weather and 5-day forecast into a single array of length 6
+                    const combinedData = [currentData, ...fiveDaysForecast];
+
+                    localStorage.setItem('weatherData', JSON.stringify({
+                        cityName,
+                        weatherData: combinedData
+                    }));
+
+                    displayWeatherData(cityName, combinedData);
+                })
+                .catch(() => {
+                    alert("An error occurred when fetching forecast data");
+                });
+        })
+        .catch(() => {
+            alert("An error occurred when fetching current weather data");
+        });
 };
 
-const displayWeatherData = (cityName, fiveDaysForecast) =>{
-        // Clearing previous weather with an empty string
-        cityInput.value = "";
-        weatherCardsDiv.innerHTML = "";
-        currentWeatherDiv.innerHTML = "";
+const displayWeatherData = (cityName, combinedData) => {
+    // Clearing previous weather with an empty string
+    cityInput.value = "";
+    weatherCardsDiv.innerHTML = "";
+    currentWeatherDiv.innerHTML = "";
 
-        // Creating weather cards and adding them to the DOM
-        console.log(fiveDaysForecast);
-        fiveDaysForecast.forEach((weatherItem, index) => {
-            if (index === 0) {
-                currentWeatherDiv.insertAdjacentHTML("beforeend", createWeatherCard(cityName, weatherItem, index));
-            } else {
-                weatherCardsDiv.insertAdjacentHTML("beforeend", createWeatherCard(cityName, weatherItem, index));
-            }
-        });
-    };
+    // Creating weather cards and adding them to the DOM
+    combinedData.forEach((weatherItem, index) => {
+        if (index === 0) {
+            currentWeatherDiv.insertAdjacentHTML("beforeend", createWeatherCard(cityName, weatherItem, index));
+        } else {
+            weatherCardsDiv.insertAdjacentHTML("beforeend", createWeatherCard(cityName, weatherItem, index));
+        }
+    });
+};
 
 const getCityCoordinates = () => {
     const cityName = cityInput.value.trim(); // This will get the city entered by the user and remove extra spaces with .trim()
@@ -93,54 +108,50 @@ const getCityCoordinates = () => {
     });
 };
 
-
 function addSearch() {
-    let cityInput = document.querySelector('.city-input');
-    const query = cityInput.value.trim();
+    const query = cityInput.value.trim().toUpperCase();
     if (query) {
         let searches = JSON.parse(localStorage.getItem('recentSearches')) || [];
         
         // Remove duplicates
         searches = searches.filter(search => search !== query);
-    
+
         // Add the new search to the beginning of the array
         searches.unshift(query);
-    
+
         // Keep only the latest 5 searches
         if (searches.length > 5) {
-          searches.pop();
+            searches.pop();
         }
-    
+
         // Save the updated searches array to local storage
         localStorage.setItem('recentSearches', JSON.stringify(searches));
         
         // Clear the search input
         cityInput.value = '';
-    
+
         // Update the displayed list
         loadRecentSearches();
-      }
-    };
-
+    }
+}
 
 function loadRecentSearches() {
     const searchList = document.getElementById('search-list');
     searchList.innerHTML = '';
-  
+
     const searches = JSON.parse(localStorage.getItem('recentSearches')) || [];
-  
+
     searches.forEach(search => {
-      const li = document.createElement('li');
-      li.textContent = search;
-      li.className = 'search-item';
-      li.onclick = () => {
-        document.getElementByClass('city-input').value = search;
-      };
-      searchList.appendChild(li);
+        const li = document.createElement('li');
+        li.textContent = search;
+        li.className = 'search-item';
+        li.onclick = () => {
+            document.querySelector('.city-input').value = search;
+            getCityCoordinates();
+        };
+        searchList.appendChild(li);
     });
-  }
-
-
+}
 
 // Load weather data from local storage on page load
 window.addEventListener('load', () => {

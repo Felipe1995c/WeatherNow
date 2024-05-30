@@ -117,6 +117,7 @@ text-shadow: #1e528e 1px 1px;
 
 #search-list {
  list-style: none;
+ cursor: pointer;
 }
 
 /* Media Queries */
