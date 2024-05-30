@@ -36,9 +36,19 @@ THEN I am again presented with current and future conditions for that city
 
 The following image shows the web application's appearance and functionality:
 
-![The weather app includes a search option, a list of cities, and a five-day forecast and current weather conditions for Atlanta.](./Assets/06-server-side-apis-homework-demo.png)
+![The weather app includes a search option, a list of cities, and a five-day forecast and current weather conditions for Atlanta.](./assets/images/weatherNow%20fetching%205%20day%20forecast.jpg)
+
+![This is the template to how the app works behind the scenes](./assets/images/weatherNow%20template.jpg)
+
+![Final product with local storage](./assets/images/weatherNow%20final.jpg)
+
+![WeatherNow APP](./assets/images/weatherNow-APP.jpg)
 
 ## Resources
 * Bootstrap css framework
 * Bootcamp activities and mini-projects
 * openweathermap API along with Geo coding API to convert lat and longitude into data to access city forecasts
+
+## Usage 
+When you look up a city it will prompt you if the city you have enter exists or not. There will also be a prompt in case of an issue fetching the coordinates.
+If there are no issues with the cities, then you can either click on search or "enter" to trigger the search. The search will then fetch the current weather and a 5 day weather forecast. Meanwhile, the city entered will also be added to the recent searches location, where you can click on them to have the city's forcast be displayed again.
