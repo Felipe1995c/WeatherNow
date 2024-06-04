@@ -96,7 +96,7 @@ const getCityCoordinates = () => {
     const cityName = cityInput.value.trim(); // This will get the city entered by the user and remove extra spaces with .trim()
     if (!cityName) return; // Return if cityName is empty
 
-    const GEOCODING_API = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=5&appid=${API_KEY}`;
+    const GEOCODING_API = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=5&appid=${API_KEY}`;
 
     // This is how we use the geocode API to get the lat and lon of the city entered
     fetch(GEOCODING_API).then(response => response.json()).then(data => {
